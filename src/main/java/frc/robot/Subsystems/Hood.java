@@ -38,16 +38,12 @@ public class Hood {
     
     public void limeH(){
         double area = HAL.limelight.area();
-        double factor = 5;
+        double factor = 5; //random value
         double height;
         height = area*factor;
-        if(isangled()){
             moveto(height);
         }
-        else{
-            off();
-        }
-}
+
 
 public boolean isangledY (){
     double toleranceY = 100; //random value

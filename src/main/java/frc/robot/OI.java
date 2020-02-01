@@ -11,8 +11,6 @@ import frc.robot.Loop;
 import frc.robot.Grain;
 import frc.robot.Procedure;
 import frc.robot.TC;
-import frc.robot.Subsystems.Drivetrain;
-import frc.robot.Subsystems.Trigger;
 import frc.robot.ninjaLib.Gamepad;
 import java.util.function.DoubleSupplier;
 import frc.robot.Pathfinding;
@@ -91,11 +89,16 @@ public class OI {
         TC releasedDDown = () ->{return !driver.getDPadDown();};
         Grain hoodDown = new Grain (hoodmanualdown, releasedDDown, hoodoff);
         
-        //SLIMELIGHT
-        Procedure slimeon = () -> {HAL.turret.limeT(1);};
-        TC releasedStartButton = () ->{return driver.getRawButton(Gamepad.BUTTON_START);};
-        Procedure notmyslime = () -> {HAL.turret.off();};
-        Grain Gslimelight = new Grain (slimeon, releasedStartButton, notmyslime);
+        //LIMELIGHT
+        Procedure limelightT = () -> {HAL.turret.limeT(1);};
+        TC withinrange = () ->{return HAL.hood.isangled();};
+        Procedure limeoffT = () -> {HAL.turret.off();};
+        Grain GlimelightT = new Grain (limelightT, withinrange, limeoffT);
+        
+        Procedure limelightH = () -> {HAL.hood.limeH();};
+        Procedure limeoffH = () -> {HAL.hood.off();};
+        TC withinrangeY = () ->{return HAL.hood.isangledY();};
+        Grain GlimelightH = new Grain (limelightH, withinrangeY, limeoffH);
 
         //Shifter
         Procedure shifton = () -> {HAL.selfClimb.prepClimb();};
@@ -140,7 +143,11 @@ public class OI {
         }
 
         if(driver.getRawButton(Gamepad.BUTTON_START)){
-            Robot.mill.addGrain(Gslimelight); 
+            Robot.mill.addGrain(GlimelightH); 
+        }
+        
+        if((driver.getRawButton(Gamepad.BUTTON_START)) && (HAL.hood.isangled())){
+            Robot.mill.addGrain(GlimelightT);
         }
 
         if(driver.getButtonStateY()){
